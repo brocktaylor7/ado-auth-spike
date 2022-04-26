@@ -1,12 +1,5 @@
 import puppeteer from 'puppeteer';
 import 'dotenv/config';
-// import * as msal from '@azure/msal-node';
-
-// async function importLibsToPage(page: Page): Promise<void> {
-//     await page.addScriptTag({
-//         path: path.resolve('dist/browser-imports.js'),
-//     });
-// }
 
 export async function run() {
     await puppeteer.launch({ headless: false, defaultViewport: null }).then(async (browser) => {
@@ -14,28 +7,8 @@ export async function run() {
 
         page.on('console', (message) => console.log(`${message.type().substr(0, 3).toUpperCase()} ${message.text()}`));
 
-        // const config: msal.Configuration = {
-        //     auth: {
-        //         clientId: '00000003-0000-0ff1-ce00-000000000000',
-        //         authority: 'https://login.microsoftonline.com/microsoft.sharepoint.com/sites/infopedia',
-        //         clientSecret: 'Enter_the_Client_secret',
-        //     },
-        //     system: {
-        //         loggerOptions: {
-        //             // loggerCallback(loglevel, message, containsPii) {
-        //             //     console.log(message);
-        //             // },
-        //             piiLoggingEnabled: false,
-        //             logLevel: msal.LogLevel.Verbose,
-        //         },
-        //     },
-        // };
-
-        // const cca = new msal.ConfidentialClientApplication(config);
-
-        // await page.goto('https://microsoft.sharepoint.com/sites/infopedia');
         await page.goto(
-            'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=4765445b-32c6-49b0-83e6-1d93765276ca&redirect_uri=https%3A%2F%2Fwww.office.com%2Flandingv2&response_type=code%20id_token&scope=openid%20profile%20https%3A%2F%2Fwww.office.com%2Fv2%2FOfficeHome.All&response_mode=form_post&nonce=637860867886150092.MjJjM2Y0M2EtMjNlYi00Mzc3LTk0OTktNWU4NmIyZTYxNzdjY2JmOGVjZjEtNzY3Ni00ZTE5LWExNzItNzc2YWFiNjNiOGIx&ui_locales=en-US&mkt=en-US&state=_iwPGhFAPfEehh6cxpNYSZ6WSWMlXaFA_UaDE_tijjeaUzBp2VDJVpAucLTKsUZKN0ZFeWpaRkdldxxXOX2Gxb24DbUShJAzyImRg0MS5vZAJnen-cB486OTZhRdE4lo90saCcUv1gcXRZXBcA59tEqWizmfQ4pKX63D6P4kGA-Xz5t5nGlrG21XsGytSJ4gtZm-mFylzYaT9QOCl0ny0cNWLBq80S4HA6yMB8w6OCsxedcrUhgci8TZhl64QS1zOzg4XR3e9TZnbWOusB68Eg&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=6.12.1.0&sso_reload=true',
+            'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=69398c47-a1ae-4414-a19c-56e1c803e890&redirect_uri=https%3A%2F%2Fmanage.privacy.microsoft.com&response_type=code%20id_token&sso_reload=true&scope=openid%20profile%20user.read&response_mode=form_post',
         );
 
         await page.waitForTimeout(1000);
@@ -47,12 +20,6 @@ export async function run() {
         await page.click('#FormsAuthentication');
         await page.type('#passwordInput', process.env.SERVICE_ACCT_PASS!);
         await page.click('#submitButton');
-        // await importLibsToPage(page);
-
-        let data = {
-            testData: 'test',
-        };
-        console.log(data);
     });
 }
 

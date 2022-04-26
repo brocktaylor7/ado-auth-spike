@@ -16,11 +16,9 @@ export async function run() {
 
         const config: msal.Configuration = {
             auth: {
-                // clientId: '00000003-0000-0ff1-ce00-000000000000',
                 clientId: process.env.AZURE_APPLICATION_ID!,
-                // clientSecret: process.env.SERVICE_ACT_PASS!,
-                authority: 'https://login.microsoftonline.com/organizations',
-                knownAuthorities: ['https://login.microsoftonline.com/organizations/v2.0'],
+                clientSecret: process.env.AZURE_APPLICATION_CLIENT_SECRET!,
+                authority: 'https://login.microsoftonline.com/organizations/',
             },
         };
 
@@ -35,6 +33,8 @@ export async function run() {
         cca.acquireTokenByUsernamePassword(loginRequest).then((tokenResponse) => {
             console.log(tokenResponse);
         });
+
+        //https://login.microsoftonline.com/microsoft.com/oauth2/authorize?client_id=69398c47-a1ae-4414-a19c-56e1c803e890&response_type=code&prompt=consent
 
         // await page.goto('https://microsoft.sharepoint.com/sites/infopedia');
         // await page.goto(
