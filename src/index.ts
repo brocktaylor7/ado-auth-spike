@@ -51,11 +51,6 @@ export async function run() {
         // await page.type('#passwordInput', process.env.SERVICE_ACCT_PASS!);
         // await page.click('#submitButton');
         // await importLibsToPage(page);
-
-        let data = {
-            testData: 'test',
-        };
-        console.log(data);
     });
 }
 

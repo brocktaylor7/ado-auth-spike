@@ -4,6 +4,7 @@
     "description": "This is a proof of concept to show that we can use [Puppeteer](https://github.com/puppeteer/puppeteer) in the service to scan authenticated pages",
     "main": "dist/index.js",
     "dependencies": {
+        "@azure/msal-browser": "^2.23.0",
         "@azure/msal-node": "^1.7.0",
         "dotenv": "^16.0.0",
         "puppeteer": "^10.1.0",
@@ -19,6 +20,7 @@
         "dev": "rollup -c && npx tsc -w",
         "start": "node dist/index.js",
         "start-interactive": "node dist/interactive-login.js",
+        "start-browser": "node dist/msal-browser.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
