@@ -36,17 +36,17 @@ export async function run() {
 
             // @ts-ignore
             const pca: msaltest.PublicClientApplication = new injectedLibraries.msalbrowser.PublicClientApplication(config);
-            // @ts-ignore
-            // const pca = new injectedLibraries.msalbrowser.PublicClientApplication(config);
 
-            const loginRequest = {
+            const loginRequest: msaltest.SilentRequest = {
                 scopes: ['user.read'],
-                username: puppeteerContextVars.serviceAccountUsername,
-                password: puppeteerContextVars.serviceAccountPassword,
+                // username: puppeteerContextVars.serviceAccountUsername,
+                // password: puppeteerContextVars.serviceAccountPassword,
             };
 
+            pca.getAccountByUsername;
+
             // @ts-ignore
-            pca.acquireTokenByCode(loginRequest).then((tokenResponse) => {
+            pca.acquireTokenSilent(loginRequest).then((tokenResponse) => {
                 console.log(tokenResponse);
             });
         }, puppeteerContextVars);

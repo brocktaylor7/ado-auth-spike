@@ -22,7 +22,7 @@ export async function run() {
             },
         };
 
-        const cca = new msal.PublicClientApplication(config);
+        const pca = new msal.PublicClientApplication(config);
 
         const loginRequest: msal.UsernamePasswordRequest = {
             scopes: ['user.read'],
@@ -30,7 +30,7 @@ export async function run() {
             password: process.env.SERVICE_ACCT_PASS!,
         };
 
-        cca.acquireTokenByUsernamePassword(loginRequest).then((tokenResponse) => {
+        pca.acquireTokenByUsernamePassword(loginRequest).then((tokenResponse) => {
             console.log(tokenResponse);
         });
 
