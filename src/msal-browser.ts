@@ -15,7 +15,6 @@ export async function run() {
 
         page.on('console', (message) => console.log(`${message.type().substr(0, 3).toUpperCase()} ${message.text()}`));
 
-        // await page.goto('https://accessibilityinsights.io');
         await page.goto('file:///' + path.resolve('src/index.html'));
 
         await importLibsToPage(page);
@@ -39,8 +38,6 @@ export async function run() {
 
             const loginRequest: msaltest.SilentRequest = {
                 scopes: ['user.read'],
-                // username: puppeteerContextVars.serviceAccountUsername,
-                // password: puppeteerContextVars.serviceAccountPassword,
             };
 
             pca.getAccountByUsername;

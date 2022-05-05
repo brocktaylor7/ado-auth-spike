@@ -5,15 +5,11 @@ export async function run() {
     await puppeteer.launch({ headless: false, defaultViewport: null }).then(async (browser) => {
         const page = await browser.newPage();
 
-        // await page.goto(
-        //     'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=69398c47-a1ae-4414-a19c-56e1c803e890&redirect_uri=https%3A%2F%2Faccessibilityinsights.io&scope=openid%20profile%20user.read',
-        //     { waitUntil: 'networkidle0' },
-        // );
-
         await attemptAuthentication(page);
 
-        console.log('Navigating to Azure Portal to demo Single Sign-on...');
-        await page.goto('https://portal.azure.com', { waitUntil: 'networkidle0' });
+        console.log('Navigating to office.com to demo Single Sign-on...');
+        await page.goto('https://office.com', { waitUntil: 'networkidle0' });
+        console.log('success!');
     });
 }
 
@@ -24,7 +20,7 @@ async function attemptAuthentication(page: puppeteer.Page, attemptNumber: number
         console.log(`Authentication Attempt #${attemptNumber}...`);
     }
 
-    await page.goto('https://login.microsoftonline.com', { waitUntil: 'networkidle0' });
+    await page.goto('https://portal.azure.com', { waitUntil: 'networkidle0' });
 
     await page.type('input[name="loginfmt"]', process.env.SERVICE_ACCT_USER!);
     await page.click('input[type="submit"]');
