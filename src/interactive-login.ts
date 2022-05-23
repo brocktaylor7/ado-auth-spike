@@ -2,10 +2,10 @@ import puppeteer from 'puppeteer';
 import 'dotenv/config';
 
 export async function run() {
-    await puppeteer.launch({ headless: false, defaultViewport: null }).then(async (browser) => {
+    await puppeteer.launch({ headless: true, defaultViewport: null }).then(async (browser) => {
         const page = await browser.newPage();
 
-        await attemptAuthentication(page);
+        await authenticate(page);
 
         console.log('Navigating to office.com to demo Single Sign-on...');
         await page.goto('https://office.com', { waitUntil: 'networkidle0' });
@@ -13,33 +13,31 @@ export async function run() {
     });
 }
 
-async function attemptAuthentication(page: puppeteer.Page, attemptNumber: number = 1) {
-    if (attemptNumber == 1) {
-        console.log('Attempting Authentication...');
-    } else {
-        console.log(`Authentication Attempt #${attemptNumber}...`);
-    }
-
-    await page.goto('https://portal.azure.com', { waitUntil: 'networkidle0' });
-
+async function authenticate(page: puppeteer.Page, attemptNumber: number = 1): Promise<void> {
+    await page.goto('https://portal.azure.com');
+    await page.waitForSelector('input[name="loginfmt"]');
     await page.type('input[name="loginfmt"]', process.env.SERVICE_ACCT_USER!);
-    await page.click('input[type="submit"]');
-    await page.waitForNavigation({ waitUntil: 'networkidle0' });
+    await page.keyboard.press('Enter');
     await page.waitForSelector('#FormsAuthentication');
     await page.click('#FormsAuthentication');
-    await page.type('#passwordInput', process.env.SERVICE_ACCT_PASS!);
-    await page.click('#submitButton');
+    await page.type('input[type="password"]', process.env.SERVICE_ACCT_PASS!);
+    await page.keyboard.press('Enter');
     await page.waitForNavigation({ waitUntil: 'networkidle0' });
-
-    if (page.url().match('^https://(msft.sts.microsoft.com|login.microsoftonline.com)')) {
+    if (!page.url().match('^https://ms.portal.azure.com')) {
         if (attemptNumber > 4) {
-            console.log('Authentication Failed!');
+            console.error(`Attempted authentication ${attemptNumber} times and ultimately failed.`);
+
             return;
         }
-        await attemptAuthentication(page, ++attemptNumber);
+        const errorText: string | null = await page.$eval('#errorText', (el) => el.textContent);
+        if (errorText !== undefined) {
+            console.warn(`Authentication failed with error: ${errorText}`);
+        }
+        await authenticate(page, attemptNumber + 1);
+
         return;
     }
-    console.log('Authentication Successful');
+    console.info('Authentication succeeded');
 }
 
 run();
