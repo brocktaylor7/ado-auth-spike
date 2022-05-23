@@ -2,14 +2,16 @@ import puppeteer from 'puppeteer';
 import 'dotenv/config';
 
 export async function run() {
-    await puppeteer.launch({ headless: true, defaultViewport: null }).then(async (browser) => {
-        const page = await browser.newPage();
+    await puppeteer.launch({ headless: false, defaultViewport: null }).then(async (browser) => {
+        const authPage = await browser.newPage();
+        await authenticate(authPage);
+        authPage.close();
 
-        await authenticate(page);
-
+        const authenticatedPage = await browser.newPage();
         console.log('Navigating to office.com to demo Single Sign-on...');
-        await page.goto('https://office.com', { waitUntil: 'networkidle0' });
+        await authenticatedPage.goto('https://office.com', { waitUntil: 'networkidle0' });
         console.log('success!');
+        browser.close();
     });
 }
 
@@ -17,12 +19,13 @@ async function authenticate(page: puppeteer.Page, attemptNumber: number = 1): Pr
     await page.goto('https://portal.azure.com');
     await page.waitForSelector('input[name="loginfmt"]');
     await page.type('input[name="loginfmt"]', process.env.SERVICE_ACCT_USER!);
-    await page.keyboard.press('Enter');
+    await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.keyboard.press('Enter')]);
+
     await page.waitForSelector('#FormsAuthentication');
     await page.click('#FormsAuthentication');
     await page.type('input[type="password"]', process.env.SERVICE_ACCT_PASS!);
-    await page.keyboard.press('Enter');
-    await page.waitForNavigation({ waitUntil: 'networkidle0' });
+    await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.keyboard.press('Enter')]);
+
     if (!page.url().match('^https://ms.portal.azure.com')) {
         if (attemptNumber > 4) {
             console.error(`Attempted authentication ${attemptNumber} times and ultimately failed.`);
